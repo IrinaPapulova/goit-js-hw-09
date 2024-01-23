@@ -1,0 +1,2 @@
+import"./assets/modulepreload-polyfill-ec808ebb.js";/* empty css                      */const t="feedback-msg",o=document.querySelector(".feedback-form"),a=o.querySelector("textarea");o.addEventListener("submit",n);a.addEventListener("input",c);s();function n(e){e.preventDefault(),console.log("Відправляємо форму"),localStorage.removeItem(t),e.currentTarget.reset()}function c(e){const r=e.target.value;localStorage.setItem(t,r)}function s(){const e=localStorage.getItem(t);e&&(a.value=e)}
+//# sourceMappingURL=commonHelpers2.js.map
