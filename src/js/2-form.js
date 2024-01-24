@@ -1,55 +1,43 @@
-const STORAGE_KEY = 'feedback-msg';
+document.addEventListener('DOMContentLoaded', () => {
+  const form = document.querySelector('.feedback-form');
+  const emailInput = form.querySelector('input[name="email"]');
+  const messageInput = form.querySelector('textarea[name="message"]');
 
-const form = document.querySelector('.feedback-form');
-const textarea = form.querySelector('textarea');
+  
+  form.addEventListener('input', () => {
+    const feedbackState = {
+      email: emailInput.value,
+      message: messageInput.value,
+    };
 
-form.addEventListener('submit', onFormSubmit);
-textarea.addEventListener('input', onTextareaInput);
+   
+    localStorage.setItem('feedback-form-state', JSON.stringify(feedbackState));
+  });
 
-populateTextarea();
+  
+  window.addEventListener('load', () => {
+    const storedState = localStorage.getItem('feedback-form-state');
 
-/*
- * - Скасовуємо стандартну поведінку
- * - Видаляємо повідомлення зі сховища
- * - Очищуємо форму
- */
+    if (storedState) {
+      const parsedState = JSON.parse(storedState);
+      emailInput.value = parsedState.email;
+      messageInput.value = parsedState.message;
+    }
+  });
 
-function onFormSubmit(event) {
-  event.preventDefault();
 
-  console.log('Відправляємо форму');
-  localStorage.removeItem(STORAGE_KEY);
-  event.currentTarget.reset();
-}
+  form.addEventListener('submit', (event) => {
+    event.preventDefault();
 
-/*
- * - Отримуємо значення поля
- * - Зберігаємо його у сховище
- */
+    const feedbackState = {
+      email: emailInput.value,
+      message: messageInput.value,
+    };
 
-function onTextareaInput(event) {
-  const message = event.target.value;
-  localStorage.setItem(STORAGE_KEY, message);
-}
+    console.log(feedbackState);
 
-/*
- * - Отримуємо значення зі сховища
- * - Якщо там щось було, оновлюємо DOM
- */
-
-function populateTextarea() {
-  const savedMessage = localStorage.getItem(STORAGE_KEY);
-
-  if (savedMessage) {
-    textarea.value = savedMessage;
-  }
-}
-
-// try {
-//   console.log(JSON.parse('{"a": 5}'));
-// } catch (err) {
-//   console.log("Виникла помилка парсингу", err);
-//   console.log(err);
-// }
-
-// console.log("end");
+    localStorage.removeItem('feedback-form-state');
+    emailInput.value = '';
+    messageInput.value = '';
+  });
+})
