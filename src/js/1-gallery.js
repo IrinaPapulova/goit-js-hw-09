@@ -1,3 +1,6 @@
+import SimpleLightbox from 'simplelightbox';
+import 'simplelightbox/dist/simple-lightbox.min.css';
+
 const images = [
   {
     preview:
@@ -68,39 +71,6 @@ const galleryContainer = document.querySelector('.gallery');
 
 galleryContainer.innerHTML = createMarkup(images);
 
-galleryContainer.addEventListener('click', handleImageClick);
-
-function handleImageClick(event) {
-  event.preventDefault();
-  if (event.target === event.currentTarget) {
-    return;
-  }
-
-  const instance = basicLightbox.create(
-    `
-        <div class="modal">
-          <img src="${event.target.dataset.source}" width="1112" height="640"/>
-        </div>`,
-    {
-      onShow: () => {
-        document.addEventListener('keydown', closeKey);
-      },
-      onClose: () => {
-        document.removeEventListener('keydown', closeKey);
-      },
-    }
-  );
-
-  instance.show();
-
-  function closeKey(event) {
-    if (event.code === 'Escape') {
-      document.removeEventListener('keydown', closeKey);
-      instance.close();
-    }
-  }
-}
-
 function createMarkup(arr) {
   return arr
     .map(
@@ -110,7 +80,6 @@ function createMarkup(arr) {
                 <img 
                   class="gallery-image" 
                   src="${preview}"
-                  data-source="${original}"
                   alt="${description}"
                 />
               </a>
@@ -119,3 +88,8 @@ function createMarkup(arr) {
     )
     .join('');
 }
+
+const lightbox = new SimpleLightbox('.gallery a', {
+  captionsData: 'alt',
+  captionDelay: 250,
+});
