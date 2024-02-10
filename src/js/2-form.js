@@ -1,43 +1,38 @@
-document.addEventListener('DOMContentLoaded', () => {
-  const form = document.querySelector('.feedback-form');
-  const emailInput = form.querySelector('input[name="email"]');
-  const messageInput = form.querySelector('textarea[name="message"]');
+const form = document.querySelector('.feedback-form');
+const LS_KEY = 'feedback-form-state';
 
-  
-  form.addEventListener('input', () => {
-    const feedbackState = {
-      email: emailInput.value,
-      message: messageInput.value,
+let emailForm = form.elements.email.value.trim();
+let messageForm = form.elements.message.value.trim();
+let formValue = {};
+
+form.addEventListener('input', evt => {
+  emailForm = form.elements.email.value.trim();
+  messageForm = form.elements.message.value.trim();
+
+  if (emailForm && messageForm) {
+    formValue = {
+      email: emailForm,
+      message: messageForm,
     };
 
-   
-    localStorage.setItem('feedback-form-state', JSON.stringify(feedbackState));
-  });
+    localStorage.setItem(LS_KEY, JSON.stringify(formValue));
+  }
+});
 
-  
-  window.addEventListener('load', () => {
-    const storedState = localStorage.getItem('feedback-form-state');
+let savedFormValue = localStorage.getItem(LS_KEY);
+if (savedFormValue) {
+  formValue = JSON.parse(savedFormValue);
+} else {
+  form.elements.email.value = "";
+form.elements.message.value = "";
+}
 
-    if (storedState) {
-      const parsedState = JSON.parse(storedState);
-      emailInput.value = parsedState.email;
-      messageInput.value = parsedState.message;
-    }
-  });
+form.elements.email.value = formValue.email;
+form.elements.message.value = formValue.message;
 
-
-  form.addEventListener('submit', (event) => {
-    event.preventDefault();
-
-    const feedbackState = {
-      email: emailInput.value,
-      message: messageInput.value,
-    };
-
-    console.log(feedbackState);
-
-    localStorage.removeItem('feedback-form-state');
-    emailInput.value = '';
-    messageInput.value = '';
-  });
-})
+form.addEventListener('submit', evt => {
+  evt.preventDefault();
+  console.log(formValue);
+  localStorage.removeItem(LS_KEY);
+  form.reset();
+});
